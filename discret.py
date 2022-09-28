@@ -3,7 +3,7 @@ import pylab as plt
 
 # Freq
 f0 = 1
-# Temps total
+# Temps total en seconde
 T = 1
 # Nombre de points:
 N = 100
