@@ -34,6 +34,13 @@ y = np.cos(2*np.pi*f0*t)*np.exp(-np.power(t-retard,2)/2)
 YTYPE="S1.15"
 ysint = Fxp(y, dtype=YTYPE)
 
+# plot du spectre «python»
+fix, ax = plt.subplots(1,2)
+#ax[0].plot(t, y, label = "y(float)")
+ax[0].plot(t, ysint, label = f"y({YTYPE})")
+ax[0].legend()
+magnitude, freqs, _ = ax[1].magnitude_spectrum(y, Fs=N/T, ds="steps-mid", label=f"fft (Fs={Fs} Hz)")
+
 DTYPE="S8.8"
 D2TYPE="S16.16"
 
@@ -42,7 +49,7 @@ fixpi = Fxp(np.pi, dtype="U3.13")
 # transformée de fourrier
 freqs_real = np.array([])
 freqs_img = np.array([])
-for k in range(N):
+for k in range(len(freqs)):
     listreal = []
     listimg = []
     for n in range(N):
@@ -57,18 +64,10 @@ for k in range(N):
 
 fourrier_power = Fxp(Fxp(freqs_img*freqs_img, dtype=DTYPE) + Fxp(freqs_real*freqs_real, dtype=DTYPE), dtype=DTYPE)
 fourrier_module = Fxp((2/N)*Fxp(np.sqrt(fourrier_power), dtype=DTYPE), dtype=DTYPE)
-
 fourrier_power[0].info()
 
-#fréquence: 0 points de 0 à N-1
-k = np.linspace(0, T, N)
-
-fix, ax = plt.subplots(1,2)
-#ax[0].plot(t, y, label = "y(float)")
-ax[0].plot(t, ysint, label = f"y({YTYPE})")
-ax[0].legend()
-ax[1].magnitude_spectrum(y, Fs=Fs, ds="steps-mid", label=f"fft (Fs={Fs} Hz)")
-ax[1].plot(k, fourrier_module, label = "freqs (calculée)")
+# plot du spectre calculé
+ax[1].plot(freqs, fourrier_module[:len(freqs)], label = "freqs (calculée)")
 #ax[1].plot(k, fourrier_power, label = "freqs (puissance calculée)")
 ax[1].legend()
 plt.show()
